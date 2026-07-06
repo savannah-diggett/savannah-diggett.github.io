@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savannah Diggett — Data Scientist</title>
+<meta name="description" content="Savannah Diggett — MSc Applied Social Data Science, London School of Economics. Machine learning, distributed computing, and applied data science.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F5F2;
+    --surface:#FFFFFF;
+    --ink:#14181C;
+    --ink-soft:#5B6570;
+    --accent:#205C52;
+    --accent-soft:#DCE8E4;
+    --rule:#D8DDD9;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'Inter', -apple-system, sans-serif;
+    --display: 'Fraunces', Georgia, serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  ::selection{background:var(--accent-soft);}
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  /* ---------- Icon links (shared: hero + contact) ---------- */
+  .icon-row{ display:flex; gap:0.9rem; align-items:center; }
+  .icon-link{
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1px solid var(--rule);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink);
+    text-decoration:none;
+    transition:all .15s ease;
+    flex-shrink:0;
+  }
+  .icon-link:hover{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+  .icon-link svg{ width:19px; height:19px; }
+
+  /* ---------- Hero (first page) ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:3rem 1.5rem;
+    position:relative;
+  }
+  .hero-photo{
+    width:148px; height:148px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid var(--rule);
+    background:var(--accent-soft);
+    margin-bottom:1.8rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--display);
+    font-size:2.4rem;
+    color:var(--accent);
+  }
+  .hero-eyebrow{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin:0 0 1rem;
+  }
+  .hero-name{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(2.6rem, 7vw, 4.4rem);
+    line-height:1.05;
+    margin:0 0 1rem;
+  }
+  .hero-tagline{
+    font-size:1.1rem;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin:0 0 2.2rem;
+  }
+  .hero-scroll{
+    position:absolute;
+    bottom:2.2rem;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.4rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .hero-scroll svg{ width:14px; height:14px; animation:bob 1.8s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  /* ---------- Sticky nav with dropdown ---------- */
+  .navbar{
+    position:sticky;
+    top:0;
+    z-index:30;
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    padding:1rem 2rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .nav-name{
+    font-family:var(--display);
+    font-size:1.15rem;
+    text-decoration:none;
+    color:var(--ink);
+  }
+  .nav-menu-wrap{ position:relative; }
+  .menu-btn{
+    background:none;
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:0.5rem 0.9rem;
+    font-family:var(--mono);
+    font-size:0.78rem;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+  }
+  .menu-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .menu-btn .chev{ transition:transform .15s ease; }
+  .menu-btn.open .chev{ transform:rotate(180deg); }
+
+  .dropdown{
+    position:absolute;
+    top:calc(100% + 0.6rem);
+    right:0;
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:0.5rem;
+    min-width:200px;
+    box-shadow:0 12px 28px rgba(20,24,28,0.08);
+    display:none;
+    flex-direction:column;
+  }
+  .dropdown.open{ display:flex; }
+  .dropdown a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-family:var(--mono);
+    font-size:0.85rem;
+    padding:0.6rem 0.8rem;
+    border-radius:6px;
+    transition:all .12s ease;
+  }
+  .dropdown a:hover, .dropdown a.active{ background:var(--accent-soft); color:var(--accent); }
+
+  /* ---------- Main content ---------- */
+  main{ max-width:760px; margin:0 auto; padding:4rem 2rem 6rem; }
+  section{ padding-bottom:5rem; scroll-margin-top:5.5rem; }
+  section + section{ border-top:1px solid var(--rule); padding-top:5rem; }
+
+  h1{
+    font-family:var(--display); font-weight:500;
+    font-size:clamp(2.2rem, 4vw, 3rem); line-height:1.1; margin:0 0 1.4rem;
+  }
+  h2{ font-family:var(--display); font-weight:500; font-size:1.7rem; margin:0 0 0.6rem; }
+  h3{
+    font-family:var(--mono); font-size:0.8rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--accent); margin:0 0 1.3rem;
+    padding-top:2.6rem; border-top:1px dashed var(--rule);
+  }
+  h3:first-of-type{ padding-top:0; border-top:none; }
+  .section-sub{ font-family:var(--mono); font-size:0.82rem; color:var(--ink-soft); margin:0 0 2rem; }
+  .lede{ font-size:1.15rem; color:var(--ink-soft); max-width:56ch; margin:0 0 2rem; }
+  p{margin:0 0 1rem; max-width:62ch;}
+
+  .btn-row{display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:1.8rem;}
+  .btn{
+    font-family:var(--mono); font-size:0.82rem; text-decoration:none;
+    padding:0.65rem 1.1rem; border-radius:6px; border:1px solid var(--rule);
+    color:var(--ink); transition:all .15s ease;
+  }
+  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .btn.primary:hover{background:#184A42;}
+  .btn:not(.primary):hover{border-color:var(--accent); color:var(--accent);}
+
+  /* ---------- Timeline ---------- */
+  .timeline{border-left:1px solid var(--rule); margin-left:0.4rem; margin-bottom:0;}
+  .t-item{position:relative; padding:0 0 2.6rem 2rem;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-item::before{
+    content:''; position:absolute; left:-5px; top:0.4rem;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--accent);
+  }
+  .t-date{ font-family:var(--mono); font-size:0.78rem; color:var(--accent); margin-bottom:0.35rem; }
+  .t-role{font-weight:600; font-size:1.05rem; margin-bottom:0.1rem;}
+  .t-org{color:var(--ink-soft); font-size:0.95rem; margin-bottom:0.6rem;}
+  .t-item ul{margin:0; padding-left:1.15rem;}
+  .t-item li{margin-bottom:0.4rem; color:var(--ink-soft);}
+  .t-badge{
+    display:inline-block; font-family:var(--mono); font-size:0.7rem;
+    color:var(--accent); background:var(--accent-soft); padding:0.15rem 0.55rem;
+    border-radius:4px; margin-left:0.5rem; vertical-align:middle;
+  }
+
+  /* ---------- Projects (GitHub) ---------- */
+  .proj-grid{display:flex; flex-direction:column; gap:1.5rem;}
+  .proj-card{
+    background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+    padding:1.75rem; transition:border-color .15s ease, transform .15s ease;
+  }
+  .proj-card:hover{border-color:var(--accent); transform:translateY(-2px);}
+  .proj-top{display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap;}
+  .proj-title{font-weight:600; font-size:1.1rem;}
+  .proj-title a{text-decoration:none; color:var(--ink);}
+  .proj-title a:hover{color:var(--accent);}
+  .proj-link{font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); text-decoration:none; white-space:nowrap;}
+  .proj-link:hover{color:var(--accent);}
+  .proj-desc{color:var(--ink-soft); margin:0.7rem 0 1rem; font-size:0.96rem;}
+  .tag-row{display:flex; flex-wrap:wrap; gap:0.5rem;}
+  .tag{
+    font-family:var(--mono); font-size:0.72rem; background:var(--accent-soft);
+    color:var(--accent); padding:0.25rem 0.6rem; border-radius:4px;
+  }
+
+  /* ---------- Education ---------- */
+  .edu-item{margin-bottom:2.2rem;}
+  .edu-item:last-child{margin-bottom:0;}
+  .edu-degree{font-weight:600; font-size:1.05rem;}
+  .edu-school{color:var(--ink-soft); font-size:0.95rem; margin-bottom:0.3rem;}
+  .edu-date{font-family:var(--mono); font-size:0.78rem; color:var(--accent); margin-bottom:0.6rem;}
+  .edu-detail{font-size:0.92rem; color:var(--ink-soft);}
+  .edu-involve-label{
+    font-family:var(--mono); font-size:0.78rem; color:var(--ink-soft);
+    margin-top:0.9rem; margin-bottom:0.4rem;
+  }
+  .edu-involve-text{ font-size:0.92rem; color:var(--ink-soft); max-width:62ch; }
+
+  /* ---------- Research (Publications + Presentations) ---------- */
+  .pub-group{margin-bottom:2.5rem;}
+  .pub-group:last-child{margin-bottom:0;}
+  .pub-group-label{
+    font-family:var(--mono); font-size:0.78rem; color:var(--accent);
+    text-transform:uppercase; letter-spacing:0.05em; margin-bottom:1rem;
+  }
+  .pub-item{ padding:1rem 0; border-bottom:1px solid var(--rule); font-size:0.94rem; color:var(--ink-soft); }
+  .pub-item:last-child{border-bottom:none;}
+  .pub-item a{color:var(--accent); text-decoration:none;}
+  .pub-item a:hover{text-decoration:underline;}
+  .pub-status{
+    font-family:var(--mono); font-size:0.7rem; color:var(--accent);
+    background:var(--accent-soft); padding:0.1rem 0.5rem; border-radius:4px; margin-left:0.4rem;
+  }
+
+  /* ---------- Awards / Volunteer ---------- */
+  .list-item{ padding:1.1rem 0; border-bottom:1px solid var(--rule); }
+  .list-item:last-child{border-bottom:none;}
+  .list-top{display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap;}
+  .list-title{font-weight:600; font-size:1rem;}
+  .list-org{color:var(--ink-soft); font-size:0.92rem; margin-top:0.15rem;}
+  .list-date{font-family:var(--mono); font-size:0.78rem; color:var(--accent); white-space:nowrap;}
+  .list-item ul{margin:0.6rem 0 0; padding-left:1.15rem;}
+  .list-item li{margin-bottom:0.35rem; color:var(--ink-soft); font-size:0.92rem;}
+
+  /* ---------- Contact ---------- */
+  .contact-text{ color:var(--ink-soft); margin-bottom:2rem; }
+  footer{ font-family:var(--mono); font-size:0.75rem; color:var(--ink-soft); padding:2.5rem 2rem 3rem; text-align:center; }
+
+  @media (max-width: 640px){
+    main{padding:3rem 1.25rem 4rem;}
+    .navbar{padding:0.9rem 1.25rem;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important; animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== First page: full-screen hero ===== -->
+<section class="hero">
+  <img class="hero-photo" src="profile.jpg" alt="Savannah Diggett">
+  <p class="hero-eyebrow">MSc Applied Social Data Science — LSE</p>
+  <h1 class="hero-name">Savannah Diggett</h1>
+  <p class="hero-tagline">Data scientist based in London, working across machine learning, distributed computing, and applied experimentation.</p>
+  <div class="icon-row">
+    <a class="icon-link" href="mailto:s.g.diggett@lse.ac.uk" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+    </a>
+    <a class="icon-link" href="https://github.com/savannah-diggett" target="_blank" rel="noopener" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+    </a>
+    <a class="icon-link" href="https://www.linkedin.com/in/savannah-diggett-33820a229/" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="8" y2="17"/><circle cx="8" cy="6.5" r="1"/><path d="M12 17v-4.5c0-1.4 1-2.5 2.5-2.5S17 11.1 17 12.5V17"/></svg>
+    </a>
+  </div>
+  <div class="hero-scroll">
+    scroll
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+</section>
+
+<!-- ===== Sticky nav (appears as you scroll past the hero) ===== -->
+<nav class="navbar">
+  <a class="nav-name" href="#top">S. Diggett</a>
+  <div class="nav-menu-wrap">
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="dropdown">
+      menu
+      <svg class="chev" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="dropdown" id="dropdown">
+      <a href="#about">About</a>
+      <a href="#education">Education</a>
+      <a href="#experience">Experience</a>
+      <a href="#research">Research</a>
+      <a href="#awards">Awards</a>
+      <a href="#volunteering">Volunteering</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <section id="about">
+    <h2>About</h2>
+    <p class="lede">
+      I'm a data scientist based in London, currently completing an MSc in Social Data Science at
+      the London School of Economics.
+    </p>
+    <p>
+      What I enjoy most about data science is its versatility. I've had the opportunity to apply
+      it across a range of disciplines, including developing a two-stage flight delay prediction
+      system for the airline industry, building a pipeline that automated sales tax calculations
+      for a multimillion-dollar company, and using natural language processing to create a tourism
+      policy uncertainty index for economic research. I enjoy learning new domains and using data
+      to solve problems that have practical, real-world impact.
+    </p>
+    <p>
+      Before moving into data science, I studied psychology and worked in quantitative research,
+      where I co-authored academic publications and presented research at national and
+      international conferences. Having a background in both the social and data sciences has
+      shaped the way I approach problems today. It encourages me to combine technical rigor with
+      an understanding of human behaviour, challenge assumptions, and approach problems from
+      multiple perspectives. I care not only about building models that perform well, but also
+      about understanding what their results mean and how they can be used to make better
+      decisions.
+    </p>
+    <div class="btn-row">
+      <a class="btn primary" href="mailto:s.g.diggett@lse.ac.uk">Get in touch</a>
+      <a class="btn" href="https://github.com/savannah-diggett" target="_blank" rel="noopener">View GitHub</a>
+    </div>
+  </section>
+
+  <section id="education">
+    <h2>Education</h2>
+
+    <div class="edu-item">
+      <div class="edu-degree">MSc Applied Social Data Science</div>
+      <div class="edu-school">London School of Economics and Political Science, London, UK</div>
+      <div class="edu-date">Sep 2025 — Sep 2026</div>
+      <div class="edu-detail">
+        Courses: Applied Machine Learning, Data Science, Distributed Computing for Big Data,
+        Computer Programming, Causal Inference.
+      </div>
+      <div class="edu-involve-label">Societies</div>
+      <div class="edu-involve-text">Methodology Society (President) · Data Science Society · Consulting Society</div>
+    </div>
+
+    <div class="edu-item">
+      <div class="edu-degree">BSc (Honours) Psychology · Minors: Global Politics, Criminal Justice</div>
+      <div class="edu-school">Clemson University, South Carolina, USA</div>
+      <div class="edu-date">Aug 2021 — May 2025 · GPA 4.00 / 4.00</div>
+      <div class="edu-detail">
+        Courses: Linear Models and Applied Econometrics, Data Science, Advanced Statistics and
+        Research Methods II, Quantitative Methods III, Statistical Methods I, Advanced Probability
+        & Statistics, Problem Solving in Mathematics.
+      </div>
+      <div class="edu-involve-label">Involvement</div>
+      <p class="edu-involve-text">
+        Clubs: Executive Officer, Psi Chi International Honor Society, Clemson University Chapter
+        (2022–2025); Kappa Delta Sorority, Epsilon Tau Chapter (2022–2025); Club Sailing Team,
+        Clemson University Club Sports Association (2021–2023); Club Rugby Team, Clemson
+        University Club Sports Association (2021–2023). Programs: Honors Peer Mentoring Program,
+        Clemson University Honors College (2021); Conversational Pairs Program, Clemson University
+        (2023); Italian Conversational Exchange Program, Lorenzo de Medici Institute, Florence,
+        Italy (2023).
+      </p>
+    </div>
+  </section>
+
+  <section id="experience">
+    <h2>Experience</h2>
+
+    <h3>Work Experience</h3>
+    <div class="timeline">
+
+      <div class="t-item">
+        <div class="t-date">Mar 2024 — Present</div>
+        <div class="t-role">Data Scientist</div>
+        <div class="t-org">A Perfect Balance Bookkeeping · USA</div>
+        <ul>
+          <li>Built Python ML pipelines (scikit-learn) incorporating geospatial features to automate order classification for financial reporting, saving 15 hours of manual work per month.</li>
+          <li>Benchmarked and improved sales tax calculation accuracy across 20 US states, identifying edge cases at state boundaries to ensure compliance.</li>
+        </ul>
+      </div>
+
+      <div class="t-item">
+        <div class="t-date">Oct 2024 — May 2025</div>
+        <div class="t-role">Quantitative Intern</div>
+        <div class="t-org">Department of Political Science, Clemson University</div>
+        <ul>
+          <li>Cleaned and structured large datasets to prepare data for analysis.</li>
+          <li>Used OLS regression to predict membership in terrorist organizations.</li>
+          <li>Created visualizations to communicate findings using ggplot.</li>
+        </ul>
+      </div>
+
+      <div class="t-item">
+        <div class="t-date">Aug 2021 — May 2025</div>
+        <div class="t-role">Research Assistant</div>
+        <div class="t-org">Clemson University College of Behavioral, Social, and Health Science</div>
+        <ul>
+          <li>Created, structured, and analyzed datasets of 300+ observations using advanced statistical modelling in Python to study human behaviour and decision-making.</li>
+          <li>Co-authored multiple peer-reviewed publications and presented at national and international academic conferences.</li>
+        </ul>
+      </div>
+
+      <div class="t-item">
+        <div class="t-date">May 2023 — Dec 2023</div>
+        <div class="t-role">Research Intern</div>
+        <div class="t-org">Medical University of South Carolina (MUSC)</div>
+        <ul>
+          <li>Collaborated with cross-disciplinary teams of clinicians to evaluate forensic and personality assessment data for advising in legal settings.</li>
+          <li>Findings improved the reliability and applicability of key psychological assessments to wider populations.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h3>Applied Projects</h3>
+    <div class="timeline">
+
+      <div class="t-item">
+        <div class="t-date">May 2026</div>
+        <div class="t-role">Project MayDay</div>
+        <div class="t-org">London School of Economics & Political Science</div>
+        <ul>
+          <li>Designed an expected-value targeting score (conversion probability AUC 0.819 × predicted spend) and built the full supporting pipeline — SQL feature engineering, model training, and live A/B test setup.</li>
+          <li>Quantified expected uplift via offline gains/ranking analysis and identified high-CTR, low-value segments to sharpen experiment hypotheses before deployment.</li>
+        </ul>
+      </div>
+
+      <div class="t-item">
+        <div class="t-date">Feb 2026</div>
+        <div class="t-role">Aviation Data Science Simulation</div>
+        <div class="t-org">British Airways</div>
+        <ul>
+          <li>Formulated research hypotheses on travel behaviour using structured passenger and flight data.</li>
+          <li>Built and validated predictive models estimating lounge demand, and classification models identifying leisure vs. business customers.</li>
+        </ul>
+      </div>
+
+      <div class="t-item">
+        <div class="t-date">Oct 2025</div>
+        <div class="t-role">AI & Analytics Stratathon <span class="t-badge">Runner-Up</span></div>
+        <div class="t-org">OC&C Strategy Consultants</div>
+        <ul>
+          <li>Placed 2nd in a strategy-analytics case competition combining data analysis, structured thinking, and problem solving.</li>
+          <li>Collaborated in a 3-person team to address a strategic business question and delivered sales growth recommendations to clients.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h3>GitHub Highlights</h3>
+    <div class="proj-grid">
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title"><a href="https://github.com/savannah-diggett/ml-flight-delay-prediction" target="_blank" rel="noopener">Flight Delay & Severity Prediction</a></div>
+          <a class="proj-link" href="https://github.com/savannah-diggett/ml-flight-delay-prediction" target="_blank" rel="noopener">github →</a>
+        </div>
+        <p class="proj-desc">
+          A two-stage distributed classification pipeline predicting whether a US flight will be
+          delayed and how severe that delay will be, benchmarking four classifiers on 3.4M+ flight
+          records across three major hub airports.
+        </p>
+        <div class="tag-row">
+          <span class="tag">Apache Spark</span>
+          <span class="tag">PySpark MLlib</span>
+          <span class="tag">Distributed Computing</span>
+          <span class="tag">Class Imbalance</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title"><a href="https://github.com/savannah-diggett/covid-distributed-analytics" target="_blank" rel="noopener">COVID Distributed Analytics</a></div>
+          <a class="proj-link" href="https://github.com/savannah-diggett/covid-distributed-analytics" target="_blank" rel="noopener">github →</a>
+        </div>
+        <p class="proj-desc">
+          A distributed analytics pipeline built on Apache Spark to process and analyze large-scale
+          COVID-19 case data, exploring patterns across time and geography at a scale a single
+          machine can't handle efficiently.
+        </p>
+        <div class="tag-row">
+          <span class="tag">Apache Spark</span>
+          <span class="tag">Large-Scale Data</span>
+          <span class="tag">Data Analytics</span>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-top">
+          <div class="proj-title"><a href="https://github.com/savannah-diggett/spark-fake-news-detector" target="_blank" rel="noopener">Spark Fake News Detector</a></div>
+          <a class="proj-link" href="https://github.com/savannah-diggett/spark-fake-news-detector" target="_blank" rel="noopener">github →</a>
+        </div>
+        <p class="proj-desc">
+          A distributed text classification system built with Spark MLlib to detect fake news
+          articles at scale, applying NLP feature extraction and classification models across a
+          large news corpus.
+        </p>
+        <div class="tag-row">
+          <span class="tag">NLP</span>
+          <span class="tag">Spark MLlib</span>
+          <span class="tag">Text Classification</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="research">
+    <h2>Research</h2>
+    <p class="section-sub">Peer-reviewed publications and conference presentations</p>
+
+    <div class="pub-group">
+      <div class="pub-group-label">Journal Articles</div>
+      <div class="pub-item">
+        Diggett, S. G., & Cotterill, B. F. (2026). Personality and political orientation: Big five
+        aspect-level associations among students at a southeastern U.S. university.
+        <em>Psi Chi Journal of Psychological Research, 31</em>(2), 122–134.
+        <a href="https://doi.org/10.24839/2325-7342.JN2026.014" target="_blank" rel="noopener">doi.org/10.24839/2325-7342.JN2026.014</a>
+      </div>
+      <div class="pub-item">
+        Kowalski, R. M., Palmieri, O., Greco, C., Coleman, F., Aurilio, E., Drolet, G.,
+        <strong>Diggett, S. G.</strong>, Williams, C., Bouknight, E., & Stewart, W. Everyday
+        complaining versus retail complaining: Prevalence, perceptions, and purposes.
+        <em>Personality and Social Psychology Bulletin.</em>
+        <span class="pub-status">under review</span>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <div class="pub-group-label">Conference Presentations</div>
+
+      <div class="pub-item">
+        Drolet, G., Kowalski, R., Greco, C., Palmieri, O., Aurilio, E., Coleman, F., Williams, C.,
+        Bouknight, E., Stewart, W., & <strong>Diggett, S.</strong> (2025). Whine or shine: The
+        complexities of everyday complaining versus retail complaining. Paper presented at the
+        annual meeting of the Southeastern Psychological Association, Atlanta, GA.
+      </div>
+
+      <div class="pub-item">
+        Greco, C., <strong>Diggett, S.</strong>, Coleman, F., Ferguson, J. C., Stewart, W.,
+        Aurilio, E., Drolet, G., Bouknight, E., Lavin, S., Palmieri, O., Dodson, C., Carroll, H.,
+        & Kowalski, R. (2025). Life after suicide. Paper presented at the annual meeting of the
+        Clemson Student Research Forum, Clemson, SC.
+      </div>
+
+      <div class="pub-item">
+        Palmieri, O., Greco, C., Coleman, F., Drolet, G., Aurilio, E., Bouknight, E., Stewart, W.,
+        Williams, C., <strong>Diggett, S.</strong>, & Kowalski, R. M. (2025). Whining, griping,
+        and complaining: Everyday complaining versus retail complaining. Paper presented at the
+        annual meeting of the Focus on Creative Inquiry Conference, Clemson, SC.
+      </div>
+
+      <div class="pub-item">
+        <strong>Diggett, S. G.</strong>, Daly, S., Jones, S., Draganov, B., Gottfried, E. D.,
+        Cain, N. M., Medenblik, A., Natoli, A. P., Nelson, S., Waugh, M. H., & Mulay, A. L.
+        (2024, March). Did you hear my covert narcissism I disguise as altruism? An AMPD
+        interrater reliability study using Taylor Swift's song lyrics. Presented at the Society
+        for Personality Assessment (SPA) Annual Conference, San Diego, CA.
+        <span class="pub-status">Honorable Mention Award</span>
+      </div>
+
+      <div class="pub-item">
+        <strong>Diggett, S. G.</strong>, Warren, E., & Cotterill, B. F. (2024, February). The
+        relationship between personality and voting behavior. Poster at the Society for
+        Personality and Social Psychology Annual Convention, San Diego, CA.
+      </div>
+
+      <div class="pub-item">
+        <strong>Diggett, S. G.</strong>, & Cotterill, B. F. (2023, November). The association
+        between personality and voting behavior. Presentation at the Clemson University Honors
+        Research Symposium, Clemson, SC.
+      </div>
+
+      <div class="pub-item">
+        <strong>Diggett, S. G.</strong>, Warren, E., & Cotterill, B. F. (2023, November). The
+        relationship between personality and voting behavior. Poster at the Society of
+        Southeastern Social Psychologists, Charlotte, NC.
+      </div>
+
+      <div class="pub-item">
+        <strong>Diggett, S. G.</strong>, Ferer, M., Stainsby, H., & Cotterill, B. F. (2023,
+        August). Personality correlates of political ideology. Poster at the American
+        Psychological Association Conference, Washington, DC.
+      </div>
+    </div>
+  </section>
+
+  <section id="awards">
+    <h2>Awards</h2>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Dean's Award for Outstanding Achievement</div><div class="list-org">Clemson University</div></div>
+        <div class="list-date">April 2025</div>
+      </div>
+      <ul>
+        <li>Presented to 1 graduating senior (out of 850+ students) who excelled across academics, extra-curricular activities, leadership, and public service.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Psi Chi Research Award</div><div class="list-org">Psi Chi Honor Society</div></div>
+        <div class="list-date">April 2025</div>
+      </div>
+      <ul>
+        <li>Recognizes the undergraduate student with the most meritorious research project.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Pioneer Award</div><div class="list-org">Psi Chi Honor Society</div></div>
+        <div class="list-date">April 2023</div>
+      </div>
+      <ul>
+        <li>$1,000 award for developing the research, engagement, and leadership skills necessary to become a successful scholar.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Clemson Psychology Department Davenport Scholar</div><div class="list-org">Clemson University</div></div>
+        <div class="list-date">Fall 2022 — present</div>
+      </div>
+      <ul>
+        <li>Selected as a psychology major who excelled in both traditional academics and psychological scholarship. Received 3×.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Clemson Palmetto Pact Scholarship</div><div class="list-org">Clemson University</div></div>
+        <div class="list-date">Fall 2021 — present</div>
+      </div>
+      <ul>
+        <li>Yearly scholarship of $1,000 for maintaining at least a 3.00 GPA.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Clemson Paul and Mildred Scholarship</div><div class="list-org">Clemson University</div></div>
+        <div class="list-date">Fall 2021 — present</div>
+      </div>
+      <ul>
+        <li>Yearly scholarship of $1,000 for maintaining at least a 3.00 GPA.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">SC Palmetto Fellows Scholarship</div><div class="list-org">State of South Carolina</div></div>
+        <div class="list-date">Fall 2021 — present</div>
+      </div>
+      <ul>
+        <li>Yearly scholarship of $7,500 for finishing in the top 6% of high school graduating class.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="volunteering">
+    <h2>Volunteering</h2>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Founder and Volunteer Coordinator</div><div class="list-org">Harus Damai Conservation Project · Palau Nias, Indonesia</div></div>
+        <div class="list-date">June 2024 — present</div>
+      </div>
+      <ul>
+        <li>Developed a website to promote the Harus Damai Conservation Project while increasing international volunteer engagement for sustainability efforts.</li>
+        <li>Serve as the primary liaison between international volunteers and local hosts to facilitate smooth communication.</li>
+        <li>Partnered with the host family to ensure an impactful experience, providing support through information sessions and coordinating local travel.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Humanitarian Aid Volunteer</div><div class="list-org">Nicosia Mercy Center · Nicosia, Cyprus</div></div>
+        <div class="list-date">Jan 2024 — June 2024</div>
+      </div>
+      <ul>
+        <li>Secured competitive grant funding to support international travel for a project providing dental and medical assistance to refugees in Athens, Greece.</li>
+        <li>Coordinated food distributions and assisted with documentation processes for refugees and vulnerable populations in Cyprus.</li>
+        <li>Organized a university-wide donation initiative to raise funding to continue support for the refugee population.</li>
+      </ul>
+    </div>
+
+    <div class="list-item">
+      <div class="list-top">
+        <div><div class="list-title">Social Media Intern</div><div class="list-org">University of Nicosia — Global Semesters · Nicosia, Cyprus</div></div>
+        <div class="list-date">Jan 2024 — June 2024</div>
+      </div>
+      <ul>
+        <li>Managed and curated content for Global Semesters' social media platforms to promote study abroad engagement.</li>
+        <li>Increased awareness and participation in university programs through targeted campaigns for sports, cultural, and volunteer activities.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <p class="contact-text">London, UK — always happy to connect about data science, research, or opportunities.</p>
+    <div class="icon-row">
+      <a class="icon-link" href="mailto:s.g.diggett@lse.ac.uk" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      </a>
+      <a class="icon-link" href="https://github.com/savannah-diggett" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+      </a>
+      <a class="icon-link" href="https://www.linkedin.com/in/savannah-diggett-33820a229/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="8" y2="17"/><circle cx="8" cy="6.5" r="1"/><path d="M12 17v-4.5c0-1.4 1-2.5 2.5-2.5S17 11.1 17 12.5V17"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>© 2026 Savannah Diggett. Built with plain HTML & CSS.</footer>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const dropdown = document.getElementById('dropdown');
+
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = dropdown.classList.toggle('open');
+    menuBtn.classList.toggle('open', isOpen);
+    menuBtn.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+      dropdown.classList.remove('open');
+      menuBtn.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', false);
+    }
+  });
+
+  dropdown.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+      menuBtn.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', false);
+    });
+  });
+
+  // Highlight active section in dropdown
+  const sections = document.querySelectorAll('main section[id]');
+  const dropLinks = document.querySelectorAll('.dropdown a');
+  const setActive = () => {
+    let current = sections[0] ? sections[0].id : '';
+    const scrollPos = window.scrollY + 160;
+    sections.forEach(sec => {
+      if (sec.offsetTop <= scrollPos) current = sec.id;
+    });
+    dropLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  };
+  document.addEventListener('scroll', setActive, { passive: true });
+  setActive();
+</script>
+
+</body>
+</html>
